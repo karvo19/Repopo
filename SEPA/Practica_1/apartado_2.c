@@ -3,22 +3,20 @@
 
 #include "driverlib2.h"
 /************************************************************
- * Primer ejemplo de manejo de pines de e/s, usando el HW de la placa
- * Los pines se definen para usar los leds y botones:
- *      LEDS: F0, F4, N0, N1
- *      BOTONES: J0, J1
- * Cuando se pulsa (y se suelta)un botón, cambia de estado,
- * entre los definidos en la matriz LED. El primer botón incrementa el estado
- * y el segundo lo decrementa. Al llegar al final, se satura.
+ * Este código es una modificación de la "Variante del EJ2, pero
+ * manejando los pines por interrupción".
  *
- * Variante del EJ2, pero manejando los pines por interrupción.
+ * Ahora se mejora el comportamiento respecto al apartado anterior
+ * gracias al uso de interrupciones para gestionar la pulsación de
+ * los botones en el instante en que el usuario las lleva a cabo
  ************************************************************/
 
 
 #define MSEC 40000 //Valor para 1ms con SysCtlDelay()
-#define MaxEst 3
+#define MaxEst 3    //Variable auxiliar para establecer el numero de estados
 
 
+//Definiciones para facilitar la lectura de los pulsadores
 #define B1_OFF GPIOPinRead(GPIO_PORTJ_BASE,GPIO_PIN_0)
 #define B1_ON !(GPIOPinRead(GPIO_PORTJ_BASE,GPIO_PIN_0))
 #define B2_OFF GPIOPinRead(GPIO_PORTJ_BASE,GPIO_PIN_1)
@@ -40,36 +38,30 @@ void rutina_interrupcion(void)
 {
     if(B1_ON)
     {
+        //Esperamos a que se suelte el boton
         while(B1_ON);
+        //Debouncing
         SysCtlDelay(20*MSEC);
+        //Actualizamos el estado
         estado++;
         if(estado==MaxEst) estado=0;
+        //Borramos el flag de interrupsión
         GPIOIntClear(GPIO_PORTJ_BASE, GPIO_PIN_0);
     }
     if(B2_ON)
       {
+        //Esperamos a que se suelte el boton
           while(B2_ON);
+          //Debouncing
           SysCtlDelay(20*MSEC);
+          //Actualizamos el estado
           estado--; if(estado==-1) estado=MaxEst - 1;
+          //Borramos el flag de interrupsión
           GPIOIntClear(GPIO_PORTJ_BASE, GPIO_PIN_1);
       }
 
 }
 
-
-/*****
- * Función para encender los leds usando la codificación que aparece en la matriz LED
- * La matriz LED hace de "circuito combinacional de salida", calculando el valor
- * de las salidas en cada estado
- */
-
-void enciende_leds(int LED[4])
-{
-    GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1*LED[0]);
-    GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, GPIO_PIN_0*LED[1]);
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4*LED[2]);
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_PIN_0*LED[3]);
-}
 
 int main(void)
 {
@@ -88,6 +80,7 @@ int main(void)
     GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_0|GPIO_PIN_1);   //J0 y J1: entradas
     GPIOPadConfigSet(GPIO_PORTJ_BASE,GPIO_PIN_0|GPIO_PIN_1,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPU); //Pullup en J0 y J1
 
+    //Inicializacion de las variables de estado.
     estado=0;
     estado_ant=0;
 
@@ -102,15 +95,19 @@ int main(void)
         {
             estado_ant=estado;
         }
+        //Mediante una estructura switch-case ejecutamos la rutina
+        //correspondiente al estado en el que nos encontremos
         switch(estado)
         {
         case 0:
+            //Encendemos todos los leds y esperamos 100 ms
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1);
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, GPIO_PIN_0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_PIN_0);
             SysCtlDelay(100*MSEC);
 
+            //Apagamos todos los leds durante 900 ms
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, 0);
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0);
@@ -118,18 +115,23 @@ int main(void)
             SysCtlDelay(900*MSEC);
             break;
         case 1:
+            //Encendemos el primer led y esperamos 1 segundos
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1);
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0);
             SysCtlDelay(1000*MSEC);
+            //Encendemos el siguiente led y esperamos 1 segundos
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, GPIO_PIN_0);
             SysCtlDelay(1000*MSEC);
+            //Encendemos el siguiente led y esperamos 1 segundos
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4);
             SysCtlDelay(1000*MSEC);
+            //Encendemos el ultimo led y esperamos 1 segundos
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_PIN_0);
             SysCtlDelay(1000*MSEC);
 
+            //Apagamos los 4 leds y esperamos 3 segundos
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, 0);
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0);
@@ -137,12 +139,14 @@ int main(void)
             SysCtlDelay(3000*MSEC);
             break;
         case 2:
+            //Encendemos los leds en las posiciones impares durante 500 ms
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1);
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0);
             SysCtlDelay(500*MSEC);
 
+            //Encendemos los leds en las posiciones pares durante 500 ms
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, 0);
             GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, GPIO_PIN_0);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0);
