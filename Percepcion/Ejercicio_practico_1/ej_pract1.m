@@ -1,3 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% El presente script está dividido en cuatro partes: 
+%       - En la primera se dimensiona y construye el tablero. 
+%
+%       - En la segunda se hacen los calculos para representar lo captado 
+%         por el sensor de la camara sin distorsion.
+%
+%       - En la tercera parte se realizan los calculos con distorsion.
+%
+%       - En la cuarta y ultima se realiza una animacion, utilizando la 
+%         funcion "pause(1)". Se recomienda poner la figura 4 a pantalla
+%         completa para ver mejor la animacion.
+%
+%
+% Los comentarios que explican el proceso y lo que hace cada linea de
+% código estan principalmente en las tres primeras partes, ya que la
+% ultima no es mas que una copia de los dos primeros con algunas 
+% modificaciones para poder representar la animacion.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 % Ejercicio práctico 1 Sistemas de percepción
 
 % En primer lugar, se va a hacer una matriz que simule el tablero de
@@ -16,12 +39,12 @@ M_P = zeros(3,Naj*Maj);   % Matriz de puntos inicialmente relleno de ceros
 separacion = 0.1;      % [m]
 
 % Ángulos de giro de los ejes de la camara
-alpha = 15*(pi/180);  %x
-beta = 20*(pi/180);    %y
-gamma = 35*(pi/180);   %z
+alpha = 180*(pi/180);  %x
+beta = 0*(pi/180);    %y
+gamma = 0*(pi/180);   %z
 
 % Posición inicial de la cámara:
-x = 0.5;
+x = 0.7;
 y = 0.5;
 z = 2;
 
@@ -84,7 +107,16 @@ kr1 = 0.144; kr2 = -0.307;
 %Tangencial
 kt1 = -0.0032; kt2 = 0.0017;
 
-%% Procedimiento del ejercicio sin distorsión en la lente
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Procedimiento del ejercicio sin distorsión en la lente
 
 % Matriz de rotación de la cámara respecto al mundo (rotación x de 180º):
 wRc = Rx*Ry*Rz;
@@ -116,12 +148,21 @@ end
 figure(2);
 plot(mp(1,:),mp(2,:),'*'); grid; hold on;     %Mostramos el tablero
 axis([-1 N+1 -1 M+1]);
+set(gca, 'YDir', 'reverse');
 title('Proyección de la imagen captada por el sensor de la cámara SIN DISTORSIÓN');
 xlabel('pix'); ylabel('pix');
 rectangle('Position', [0 0 N M]); hold off;
 
 
-%% Procedimiento del ejercicio con distorsión en la lente
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Procedimiento del ejercicio con distorsión en la lente
 
 % En primer lugar, es necesario poner los puntos del tablero de ajedrez
 % (wM_P) referenciados al sistema de referencia de la cámara (cM_P):
@@ -188,11 +229,20 @@ end
 % Representando:
 figure(3);
 plot(m_p_dist(1,:),m_p_dist(2,:),'*'); grid; hold on;     %Mostramos el tablero
+axis([-1 N+1 -1 M+1]);
+set(gca, 'YDir', 'reverse');
 title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
 xlabel('pix'); ylabel('pix');
 rectangle('Position', [0 0 N M]); hold off;
 
-%% Animaciones
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Animaciones
 % Vamos a representar tanto lo captado por la camara como la vista externa
 % del conjunto Camara-Tablero respecto al mundo.
 
@@ -201,8 +251,6 @@ rectangle('Position', [0 0 N M]); hold off;
 
 % Se hará simultaneamente con y sin distorsión para comparar resultados.
 clear all
-close all
-clc
 
 % Los calculos son exactamente los mismos que antes pero todo juntos
 Naj = 8;             % Número de columnas de tablero de ajedrez
@@ -249,16 +297,16 @@ A = [fx s*fx u0
     %Tangencial
     kt1 = -0.0032; kt2 = 0.0017;
 
-for i = 0:9
+for i = 0:0.1:9
     % Ángulos de giro de los ejes de la camara
-    alpha = 180*(pi/180);  %x
-    beta = 5*i*(pi/180);    %y
-    gamma = 2*i*(pi/180);   %z
+    alpha = (-90/9*i+180)*(pi/180);  %x
+    beta =  (-20/9*i)*(pi/180);    %y
+    gamma = (-110/9*i)*(pi/180);      %z
 
     % Posición inicial de la cámara:
-    x = 0.5+0.05*i;
-    y = 0.5-0.05*i;
-    z = 2-0.15*i;
+    x =  0.05/9*i+0.7;
+    y =  0.7/9*i+0.5;
+    z = -1.7/9*i+2;
 
     % Matrices de rotación
     Rx = [1             0           0
@@ -288,7 +336,8 @@ for i = 0:9
         mp(:,i) = mp_(1:2,i)/mp_(3,i);
     end
     
-    figure(1);
+    figure(4);
+    subplot(2,2,1);
     plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
     plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
     plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
@@ -303,11 +352,30 @@ for i = 0:9
     plot3([x ejez_c(1)],[y ejez_c(2)],[z ejez_c(3)], 'b'); % eje z de la camara
     title('Vista externa de la posicion relativa Camara-Tablero');
     xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
+    axis([0 1 0 1.5 0 2]);
     
+    subplot(2,2,2);
+    plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
+    plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
+    plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
+    plot3([0 0],[0 0],[0 1], 'b'); % eje z del tablero
+    % Camara
+    plot3(x, y, z, 'm*'); % Origen de la camara
+    ejex_c = wTc*[0.1 0 0 1]';
+    ejey_c = wTc*[0 0.1 0 1]';
+    ejez_c = wTc*[0 0 0.1 1]';
+    plot3([x ejex_c(1)],[y ejex_c(2)],[z ejex_c(3)], 'r'); % eje x de la camara
+    plot3([x ejey_c(1)],[y ejey_c(2)],[z ejey_c(3)], 'g'); % eje y de la camara
+    plot3([x ejez_c(1)],[y ejez_c(2)],[z ejez_c(3)], 'b'); % eje z de la camara
+    title('Vista externa de la posicion relativa Camara-Tablero');
+    xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
+    axis([0 1 0 1.5 0 2]);
     % Vista desde la cámara sin distorsionar
-    figure(2);
+    %figure(2);
+    subplot(2,2,3);
     plot(mp(1,:),mp(2,:),'m*'); grid; hold on;
     axis([-1 N+1 -1 M+1]);
+    set(gca, 'YDir', 'reverse');
     title('Proyección de la imagen captada por el sensor de la cámara SIN DISTORSIÓN');
     xlabel('pix'); ylabel('pix');
     rectangle('Position', [0 0 N M]); hold off;
@@ -342,14 +410,14 @@ for i = 0:9
     end
 
     % Vista desde la cámara con distorsion
-    figure(3);
+    %figure(3);
+    subplot(2,2,4);
     plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); grid; hold on;     %Mostramos el tablero
     axis([-1 N+1 -1 M+1]);
+    set(gca, 'YDir', 'reverse');
     title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
     xlabel('pix'); ylabel('pix');
     rectangle('Position', [0 0 N M]); hold off;
     
-    pause();
+    pause(0.1);
 end
-
-close all;
