@@ -3,22 +3,20 @@
 % En primer lugar, se va a hacer una matriz que simule el tablero de
 % ajedrez que se desea proyectar en el sensor de la cámara.
 
-% Se va a considerar que hay una separación entre puntos de 10cm
-% equidistantes tanto en el eje horizontal como en vertical:
 clear all
 close all
 clc
 %i --> fila; j --> columna
 
-Naj = 8;             % Número de columnas de tablero de ajedrez
-Maj = 5;             % Número de filas de tablero de ajedrez
-M_P = zeros(3,Naj*Maj);   % Matriz de puntos inicialmente relleno de ceros
-separacion = 0.1;      % [m]
+Naj = 8;                    % Número de columnas de tablero de ajedrez
+Maj = 5;                    % Número de filas de tablero de ajedrez
+M_P = zeros(3,Naj*Maj);     % Matriz de puntos inicialmente relleno de ceros
+separacion = 0.1;           % Tanto entre puntos horizontales como verticales [m]
 
 % Ángulos de giro de los ejes de la camara
-alpha = 15*(pi/180);  %x
-beta = 20*(pi/180);    %y
-gamma = 35*(pi/180);   %z
+alpha = 15*(pi/180);            %x
+beta = 20*(pi/180);             %y
+gamma = 35*(pi/180);            %z
 
 % Posición inicial de la cámara:
 x = 0.5;
@@ -38,6 +36,7 @@ plot(wM_P(1,:),wM_P(2,:),'*'); grid; hold on;     %Mostramos el tablero
 title('Representación del tablero');
 xlabel('Horizontal (m)'); ylabel('Horizontal (m)');
 rectangle('Position', [0 0 separacion*(Naj-1) separacion*(Maj-1)]);
+
 
 % Parámetros de la cámara
 f = 4.2e-3;             %Distancia focal (m)               
