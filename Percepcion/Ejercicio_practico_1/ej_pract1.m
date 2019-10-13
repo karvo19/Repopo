@@ -25,29 +25,11 @@ x = 0.5;
 y = 0.5;
 z = 2;
 
-<<<<<<< HEAD
-%Ángulos de euler de la cámara:
-alpha=180*(pi/180);  %x
-beta=0;              %y
-gamma=0;             %z
-
-%Posición inicial de la cámara:
-x=0.5;
-y=0.5;
-z=2;
-
-
-for j=1:Maj          %Por filas del tablero
-    for i=1:Naj      %Por columnas del tablero
-        wM_P(:,(i+(j-1)*Naj)) = [separacion*(i-1) separacion*(j-1) 0];
-        wM_P_(:,(i+(j-1)*Naj))=[wM_P(:,(i+(j-1)*Naj));1];        %Matriz en homogéneas
-=======
 % Generamos las coordenadas respecto al mundo de los puntos del tablero
 for j = 1:Maj          % Por filas del tablero
     for i = 1:Naj      % Por columnas del tablero
         wM_P(:,(i+(j-1)*Naj)) = [separacion*(i-1) separacion*(j-1) 0];
         wM_P_(:,(i+(j-1)*Naj)) = [wM_P(:,(i+(j-1)*Naj));1];        %Matriz en homogéneas
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
     end
 end
 
@@ -81,15 +63,6 @@ A = [fx s*fx u0
       0   fy v0
       0    0  1];
 
-<<<<<<< HEAD
-  % Matrices de rotación
-Rx = [       1          0           0
-             0    cos(alpha) -sin(alpha)
-             0    sin(alpha)  cos(alpha)];
-Ry = [       cos(beta)          0           sin(beta)
-             0                  1             0
-             -sin(beta)         0           cos(beta)];
-=======
 % Matrices de rotación
 Rx = [1             0           0
       0    cos(alpha) -sin(alpha)
@@ -99,7 +72,6 @@ Ry = [ cos(beta)    0   sin(beta)
                0    1           0
       -sin(beta)    0   cos(beta)];
   
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 Rz = [cos(gamma) -sin(gamma)   0
       sin(gamma)  cos(gamma)   0
             0           0      1];
@@ -108,26 +80,12 @@ Rz = [cos(gamma) -sin(gamma)   0
 %Coeficientes de distorsión
 %Radial
 kr1 = 0.144; kr2 = -0.307;
-<<<<<<< HEAD
-
-=======
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 
 %Tangencial
 kt1 = -0.0032; kt2 = 0.0017;
 
 %% Procedimiento del ejercicio sin distorsión en la lente
 
-<<<<<<< HEAD
-%Matriz de rotación de la cámara respecto al mundo (rotación x 180º):
-wRc = Rx*Ry*Rz;
-
-%Matriz de traslación de la cámara respecto al mundo:
-wtc = [x y z]';
-
-%Por tanto, la matriz de transformación homogénea quedaría (PRIMERO
-%TRASLADAR, LUEGO ROTAR): 
-=======
 % Matriz de rotación de la cámara respecto al mundo (rotación x de 180º):
 wRc = Rx*Ry*Rz;
 
@@ -136,7 +94,6 @@ wtc = [x y z]';
 
 % Por tanto, la matriz de transformación homogénea quedaría (PRIMERO
 % TRASLADAR, LUEGO ROTAR): 
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 wTc = [eye(3) [wtc]; [0 0 0 1]]*[wRc [0;0;0]; [0 0 0 1]];
 
 %Para poner la matriz de transformación homogénea respecto a la cámara:
@@ -158,10 +115,7 @@ end
 
 figure(2);
 plot(mp(1,:),mp(2,:),'*'); grid; hold on;     %Mostramos el tablero
-<<<<<<< HEAD
-=======
 axis([-1 N+1 -1 M+1]);
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 title('Proyección de la imagen captada por el sensor de la cámara SIN DISTORSIÓN');
 xlabel('pix'); ylabel('pix');
 rectangle('Position', [0 0 N M]); hold off;
@@ -169,25 +123,6 @@ rectangle('Position', [0 0 N M]); hold off;
 
 %% Procedimiento del ejercicio con distorsión en la lente
 
-<<<<<<< HEAD
-%En primer lugar, es necesario poner los puntos del tablero de ajedrez
-%(wM_P) referenciados al sistema de referencia de la cámara (cM_P):
-
-%Matriz de rotación de la cámara respecto al mundo (rotación x 180º):
-wRc = Rx*Ry*Rz;
-
-%Matriz de traslación de la cámara respecto al mundo:
-wtc = [x y z]';
-
-%Por tanto, la matriz de transformación homogénea quedaría (PRIMERO
-%TRASLADAR, LUEGO ROTAR): 
-wTc = [eye(3) [wtc]; [0 0 0 1]]*[wRc [0;0;0]; [0 0 0 1]];
-
-%Para poner la matriz de transformación homogénea respecto a la cámara:
-cTw = inv(wTc);
-
-%De donde se obtienen los parámetros extrínsecos:
-=======
 % En primer lugar, es necesario poner los puntos del tablero de ajedrez
 % (wM_P) referenciados al sistema de referencia de la cámara (cM_P):
 
@@ -205,7 +140,6 @@ wTc = [eye(3) [wtc]; [0 0 0 1]]*[wRc [0;0;0]; [0 0 0 1]];
 cTw = inv(wTc);
 
 % De donde se obtienen los parámetros extrínsecos:
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 cRw = cTw(1:3,1:3);
 ctw = cTw(1:3,4);
 
@@ -215,22 +149,6 @@ ctw = cTw(1:3,4);
 %va después de la proyección):
 cM_P = [cRw ctw] * wM_P_;
 
-<<<<<<< HEAD
-%A continuación, se proyectarán los puntos NORMALIZADOS:
-for i = 1:Naj*Maj
-M_p_norm(:,i) = [cM_P(1,i)/cM_P(3,i);cM_P(2,i)/cM_P(3,i)];     %cX/cZ;cY/cZ
-end
-
-%Una vez obtenidos los puntos proyectados normalizados, se aplican las
-%distorsiones radial y tangencial a cada punto de la matriz:
-
-%Vector de r^2 (para cada punto):
-for i = 1:Naj*Maj
-    r2(i) = M_p_norm(1,i)^2 + M_p_norm(2,i)^2;      %r^2=x^2+y^2
-end
-
-%Vector de distorsión radial:
-=======
 % A continuación, se proyectarán los puntos NORMALIZADOS:
 for i = 1:Naj*Maj
     M_p_norm(:,i) = [cM_P(1,i)/cM_P(3,i);cM_P(2,i)/cM_P(3,i)];     %cX/cZ;cY/cZ
@@ -245,54 +163,33 @@ for i = 1:Naj*Maj
 end
 
 % Vector de distorsión radial:
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 for i = 1:Naj*Maj
     dist_r(i) = 1 + kr1*r2(i) + kr2*r2(i)^2;
 end
 
-<<<<<<< HEAD
-%Matriz de distorsión tangencial:
-=======
 % Matriz de distorsión tangencial:
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 for i = 1:Naj*Maj
     dist_t(:,i) =  [ (2*kt1*M_p_norm(1,i)*M_p_norm(2,i)) + kt2*(r2(i)+2*M_p_norm(1,i)^2) ;
                      (2*kt2*M_p_norm(1,i)*M_p_norm(2,i)) + kt1*(r2(i)+2*M_p_norm(2,i)^2)];
 end
 
-<<<<<<< HEAD
-%Por tanto, la matriz de puntos normalizados y distorsionados quedaría:
-=======
 % Por tanto, la matriz de puntos normalizados y distorsionados quedaría:
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 for i = 1:Naj*Maj
     m_p_norm_dist(:,i) = [M_p_norm(1,i);M_p_norm(2,i)] * dist_r(i) + [dist_t(1,i);dist_t(2,i)];
 end
 
-<<<<<<< HEAD
-%Ahora, para obtener los puntos distorsionados (sin normalizar) y
-%proyectados:
-=======
 % Ahora, para obtener los puntos distorsionados (sin normalizar) y
 % proyectados:
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 for i = 1:Naj*Maj
     m_p_dist(:,i) = [m_p_norm_dist(1,i)*fx + u0 ; m_p_norm_dist(2,i)*fy + v0 ];
 end
 
 
-<<<<<<< HEAD
-%Representando:
-=======
 % Representando:
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
 figure(3);
 plot(m_p_dist(1,:),m_p_dist(2,:),'*'); grid; hold on;     %Mostramos el tablero
 title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
 xlabel('pix'); ylabel('pix');
-<<<<<<< HEAD
-rectangle('Position', [0 0 N M]); hold off;
-=======
 rectangle('Position', [0 0 N M]); hold off;
 
 %% Animaciones
@@ -456,4 +353,3 @@ for i = 0:9
 end
 
 close all;
->>>>>>> ddd0015978107d128695960ce04f71e5330f6a9a
