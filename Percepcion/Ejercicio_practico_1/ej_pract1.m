@@ -44,8 +44,8 @@ beta = 0*(pi/180);    %y
 gamma = 0*(pi/180);   %z
 
 % Posición inicial de la cámara:
-x = 0.7;
-y = 0.5;
+x = 0;
+y = 0;
 z = 2;
 
 % Generamos las coordenadas respecto al mundo de los puntos del tablero
@@ -154,7 +154,7 @@ title('Proyección de la imagen captada por el sensor de la cámara SIN DISTORSIÓN
 xlabel('pix'); ylabel('pix');
 rectangle('Position', [0 0 N M]); hold off;
 
-
+hold on;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -228,8 +228,8 @@ end
 
 
 % Representando:
-figure(3);
-plot(m_p_dist(1,:),m_p_dist(2,:),'*'); grid; hold on;     %Mostramos el tablero
+% figure(3);
+plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); %grid; hold on;     %Mostramos el tablero
 axis([-1 N+1 -1 M+1]);
 set(gca, 'YDir', 'reverse');
 title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
@@ -338,7 +338,7 @@ for i = 0:0.1:9
     end
     
     figure(4);
-    subplot(2,2,1);
+    subplot(2,2,1:1);
     plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
     plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
     plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
@@ -355,31 +355,31 @@ for i = 0:0.1:9
     xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
     axis([0 1 0 1.5 0 2]);
     
-    subplot(2,2,2);
-    plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
-    plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
-    plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
-    plot3([0 0],[0 0],[0 1], 'b'); % eje z del tablero
-    % Camara
-    plot3(x, y, z, 'm*'); % Origen de la camara
-    ejex_c = wTc*[0.1 0 0 1]';
-    ejey_c = wTc*[0 0.1 0 1]';
-    ejez_c = wTc*[0 0 0.1 1]';
-    plot3([x ejex_c(1)],[y ejex_c(2)],[z ejex_c(3)], 'r'); % eje x de la camara
-    plot3([x ejey_c(1)],[y ejey_c(2)],[z ejey_c(3)], 'g'); % eje y de la camara
-    plot3([x ejez_c(1)],[y ejez_c(2)],[z ejez_c(3)], 'b'); % eje z de la camara
-    title('Vista externa de la posicion relativa Camara-Tablero');
-    xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
-    axis([0 1 0 1.5 0 2]);
+%     subplot(2,2,2);
+%     plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
+%     plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
+%     plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
+%     plot3([0 0],[0 0],[0 1], 'b'); % eje z del tablero
+%     % Camara
+%     plot3(x, y, z, 'm*'); % Origen de la camara
+%     ejex_c = wTc*[0.1 0 0 1]';
+%     ejey_c = wTc*[0 0.1 0 1]';
+%     ejez_c = wTc*[0 0 0.1 1]';
+%     plot3([x ejex_c(1)],[y ejex_c(2)],[z ejex_c(3)], 'r'); % eje x de la camara
+%     plot3([x ejey_c(1)],[y ejey_c(2)],[z ejey_c(3)], 'g'); % eje y de la camara
+%     plot3([x ejez_c(1)],[y ejez_c(2)],[z ejez_c(3)], 'b'); % eje z de la camara
+%     title('Vista externa de la posicion relativa Camara-Tablero');
+%     xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
+%     axis([0 1 0 1.5 0 2]);
+    
     % Vista desde la cámara sin distorsionar
-    %figure(2);
-    subplot(2,2,3);
-    plot(mp(1,:),mp(2,:),'m*'); grid; hold on;
+    subplot(2,2,3:4);
+    plot(mp(1,:),mp(2,:),'k*'); grid; hold on;
     axis([-1 N+1 -1 M+1]);
     set(gca, 'YDir', 'reverse');
     title('Proyección de la imagen captada por el sensor de la cámara SIN DISTORSIÓN');
     xlabel('pix'); ylabel('pix');
-    rectangle('Position', [0 0 N M]); hold off;
+    rectangle('Position', [0 0 N M]); % hold off;
 
 
     % Procedimiento del ejercicio con distorsión en la lente
@@ -412,8 +412,8 @@ for i = 0:0.1:9
 
     % Vista desde la cámara con distorsion
     %figure(3);
-    subplot(2,2,4);
-    plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); grid; hold on;     %Mostramos el tablero
+    subplot(2,2,3:4);
+    plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); %grid; hold on;     %Mostramos el tablero
     axis([-1 N+1 -1 M+1]);
     set(gca, 'YDir', 'reverse');
     title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
