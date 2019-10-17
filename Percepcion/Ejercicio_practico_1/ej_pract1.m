@@ -56,6 +56,8 @@ for j = 1:Maj          % Por filas del tablero
     end
 end
 
+
+% Se hace el plot del tablero
 figure(1);
 plot(wM_P(1,:),wM_P(2,:),'*'); grid; hold on;     %Mostramos el tablero
 title('Representación del tablero');
@@ -146,6 +148,8 @@ for i=1:Naj*Maj
     mp(:,i) = mp_(1:2,i)/mp_(3,i);
 end
 
+
+%Se hace el plot de la imagen captada por el sensor sin distorsión
 figure(2);
 plot(mp(1,:),mp(2,:),'*'); grid; hold on;     %Mostramos el tablero
 axis([-1 N+1 -1 M+1]);
@@ -298,6 +302,10 @@ A = [fx s*fx u0
     %Tangencial
     kt1 = -0.0032; kt2 = 0.0017;
 
+    
+%Bucle for que permite generar la animación fluida del movimiento de la
+%cámara, considerando giros y traslaciónes y se representan en un plot
+
 for i = 0:0.1:9
     % Ángulos de giro de los ejes de la camara
     alpha = (-90/9*i+180)*(pi/180);  %x
@@ -354,23 +362,6 @@ for i = 0:0.1:9
     title('Vista externa de la posicion relativa Camara-Tablero');
     xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
     axis([0 1 0 1.5 0 2]);
-    
-%     subplot(2,2,2);
-%     plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
-%     plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
-%     plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
-%     plot3([0 0],[0 0],[0 1], 'b'); % eje z del tablero
-%     % Camara
-%     plot3(x, y, z, 'm*'); % Origen de la camara
-%     ejex_c = wTc*[0.1 0 0 1]';
-%     ejey_c = wTc*[0 0.1 0 1]';
-%     ejez_c = wTc*[0 0 0.1 1]';
-%     plot3([x ejex_c(1)],[y ejex_c(2)],[z ejex_c(3)], 'r'); % eje x de la camara
-%     plot3([x ejey_c(1)],[y ejey_c(2)],[z ejey_c(3)], 'g'); % eje y de la camara
-%     plot3([x ejez_c(1)],[y ejez_c(2)],[z ejez_c(3)], 'b'); % eje z de la camara
-%     title('Vista externa de la posicion relativa Camara-Tablero');
-%     xlabel('X [m]'); ylabel('Y [m]'); zlabel('Z [m]');hold off;
-%     axis([0 1 0 1.5 0 2]);
     
     % Vista desde la cámara sin distorsionar
     subplot(2,1,2);
