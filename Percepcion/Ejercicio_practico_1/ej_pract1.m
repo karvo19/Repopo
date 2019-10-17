@@ -228,8 +228,8 @@ end
 
 
 % Representando:
-% figure(3);
-plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); %grid; hold on;     %Mostramos el tablero
+figure(3);
+plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); grid; hold on;     %Mostramos el tablero
 axis([-1 N+1 -1 M+1]);
 set(gca, 'YDir', 'reverse');
 title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
@@ -338,7 +338,7 @@ for i = 0:0.1:9
     end
     
     figure(4);
-    subplot(2,2,1:1);
+    subplot(2,1,1);
     plot3(wM_P(1,:), wM_P(2,:), wM_P(3,:), 'm*');grid;hold on;
     plot3([0 (Naj-1)*separacion],[0 0],[0 0], 'r'); % eje x del tablero
     plot3([0 0],[0 (Maj-1)*separacion],[0 0], 'g'); % eje y del tablero
@@ -373,11 +373,11 @@ for i = 0:0.1:9
 %     axis([0 1 0 1.5 0 2]);
     
     % Vista desde la cámara sin distorsionar
-    subplot(2,2,3:4);
+    subplot(2,1,2);
     plot(mp(1,:),mp(2,:),'k*'); grid; hold on;
     axis([-1 N+1 -1 M+1]);
     set(gca, 'YDir', 'reverse');
-    title('Proyección de la imagen captada por el sensor de la cámara SIN DISTORSIÓN');
+    title('Proyección de la imagen captada por el sensor de la cámara');
     xlabel('pix'); ylabel('pix');
     rectangle('Position', [0 0 N M]); % hold off;
 
@@ -412,13 +412,21 @@ for i = 0:0.1:9
 
     % Vista desde la cámara con distorsion
     %figure(3);
-    subplot(2,2,3:4);
-    plot(m_p_dist(1,:),m_p_dist(2,:),'m*'); %grid; hold on;     %Mostramos el tablero
+    subplot(2,1,2);
+    plot(m_p_dist(1,:),m_p_dist(2,:),'m*');  %grid; hold on;     %Mostramos el tablero
     axis([-1 N+1 -1 M+1]);
     set(gca, 'YDir', 'reverse');
-    title('Proyección de la imagen captada por el sensor de la cámara CON DISTORSIÓN');
+    
+    %Ajuste del tamaño de ventana
+    size_window = get(0,'Screensize');
+    size_window(3) = size_window(3)/2;
+    set(gcf, 'Position', size_window);
+    
+    title('Proyección de la imagen captada por el sensor de la cámara');
     xlabel('pix'); ylabel('pix');
-    rectangle('Position', [0 0 N M]); hold off;
+    rectangle('Position', [0 0 N M]); 
+    legend('Sin distorsión','Con distorsión','Location','NorthWest');
+    hold off;
     
     pause(0.1);
 end
