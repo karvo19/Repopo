@@ -62,6 +62,7 @@ title('Representación del tablero');
 xlabel('Horizontal (m)'); ylabel('Horizontal (m)');
 rectangle('Position', [0 0 separacion*(Naj-1) separacion*(Maj-1)]);
 
+
 % Parámetros de la cámara
 f = 4.2e-3;             %Distancia focal (m)               
 
