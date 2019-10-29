@@ -9,9 +9,8 @@
 
 /***********************************
  Manejo del servomotor mediante pwm, interrupciones y modos de bajo consumo.
- El micro se encuentra en modo bajo consumo, solo con el pwm y
- los botones habilitados, y cuando estos ultimos producen una interrupcion,
- se activa el  timer para que cuente un segundo y luego vuelve a dormirse.
+ El micro se encuentra en modo bajo consumo, solo con el pwm del motor,
+ los botones y el timer 0 habilitados.
 
  *************************************/
 
@@ -30,19 +29,20 @@ volatile int Min_pos = 1300; //1875
 volatile int Mid_pos;
 volatile int pos;
 
-// Variables para la monitorizacion
-volatile int horas,minutos,segundos,milisegundos;
-volatile int A,B;
-char string[120];
-volatile int aux;
+// Variables para la monitorizacion del sistema
+volatile int horas,minutos,segundos,milisegundos; //Tiempo
+volatile int A,B;                                 //Piezas
+char string[120];                                 //Comunicacion
+volatile int aux;       //Variable auxiliar para la comunicacion
 
 int RELOJ, PeriodoPWM;
 int t;
 
-// Rutina de interrupcion para el timer 0 (temporizamos un segundo)
+// Rutina de interrupcion para el timer 0 (temporizamos un milisegundo)
 void IntTimer0(void)
 {
-    t++;
+    // Variables que contabilizan el tiempo del sistema
+    // Actualizamos segundos, minutos y horas segun corresponda
     milisegundos ++;
     if (milisegundos >= 1000)
     {
@@ -60,6 +60,8 @@ void IntTimer0(void)
         }
     }
 
+    // Variables que controlan la vuelta del motor a la posicion central
+    t++;
     // Si ha pasado un segundo
     if(t >= 1000)
     {
@@ -68,12 +70,15 @@ void IntTimer0(void)
         pos = Mid_pos;
         // Desabilitamos el timer 0 hasta que se vuelva a necesitar
     }
+    // Limpiamos la interrupcion del timer
     TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 }
 
 void rutina_interrupcion(void)
 {
+    //Variable que indica al sistema que debe comunicar algo por UART
     aux = 0;
+
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER0);  // Timer 0
     if(B1_ON){  //Si se pulsa B1 -> Max_pos
         SysCtlDelay(10*MSEC);
@@ -156,45 +161,19 @@ int main(void)
 
     UARTStdioConfig(0, 115200, RELOJ);
 
-    /*if(Detecta_BP(1))
-    {
-        UARTprintf("\n--------------------------------------");
-        UARTprintf("\n  BOOSTERPACK detectado en posicion 1");
-        UARTprintf("\n   Configurando puerto I2C0");
-        UARTprintf("\n--------------------------------------");
-        Conf_Boosterpack(1, RELOJ);
-    }
-    else if(Detecta_BP(2))
-    {
-        UARTprintf("\n--------------------------------------");
-        UARTprintf("\n  BOOSTERPACK detectado en posicion 2");
-        UARTprintf("\n   Configurando puerto I2C2");
-        UARTprintf("\n--------------------------------------");
-        Conf_Boosterpack(2, RELOJ);
-    }
-    else
-    {
-        UARTprintf("\n--------------------------------------");
-        UARTprintf("\n  Ningun BOOSTERPACK detectado   :-/  ");
-        UARTprintf("\n              Saliendo");
-        UARTprintf("\n--------------------------------------");
-        return 0;
-    }*/
-
-
-
     PeriodoPWM=37499; // 50Hz  a 1.875MHz
 
     // Inicializamos la variable del tiempo
     t = 0;
 
-    A = 0;
-    B = 0;
-    // Reseteamos las variables temporales
+
+    // Inicializamos las variables de monitorizacion
     horas = 0;
     minutos = 0;
     segundos = 0;
     milisegundos = 0;
+    A = 0;
+    B = 0;
     aux = 0;
 
     // Calculamos la posicion media
@@ -212,15 +191,16 @@ int main(void)
 
     while(1){
         PWMPulseWidthSet(PWM0_BASE, PWM_OUT_6, pos); // Ejecutamos el movimiento
+        // Si al salir del modo bajo consumo hay algo nuevo que transmitir por la uart, lo transmitimos
         if(pos == Max_pos && aux == 0)
         {
-            sprintf(string,"[%d:%d:%d] Pieza tipo A detectada. \n %d piezas tipo A / %d piezas tipo B \n \n",horas, minutos, segundos, A, B);
+            sprintf(string,"[%d:%d:%d] Pieza tipo A detectada. \n %d piezas tipo A / %d piezas tipo B \n\n",horas, minutos, segundos, A, B);
             UARTprintf(string);
             aux = 1;
         }
         if(pos == Min_pos && aux == 0)
         {
-            sprintf(string,"[%d:%d:%d] Pieza tipo B detectada. \n %d piezas tipo A / %d piezas tipo B \n \n",horas, minutos, segundos, A, B);
+            sprintf(string,"[%d:%d:%d] Pieza tipo B detectada. \n %d piezas tipo A / %d piezas tipo B \n\n",horas, minutos, segundos, A, B);
             UARTprintf(string);
             aux = 1;
         }

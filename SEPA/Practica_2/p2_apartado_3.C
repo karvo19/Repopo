@@ -16,15 +16,17 @@
 
 
 /***********************************
- * Ejemplo de manejo de un motor paso a paso conectado en el boosterpack 1 (pines PF1, PF2, PF3, PG0)
- * Si se pulsa un botón gira en un sentido, y si se pulsa el otro botón gira en sentido contrario.
- * Si no se pulsa ninguno, permanece en reposo.
+ * Manejo de un motor paso a paso conectado en el boosterpack 1 (pines PK4, PK5, PM0, PG1)
+ * donde se simula un segundero de un reloj. Puesto que los pasos del motor usado no son
+ * divisibles entre 60, se hacen los ajustes necesarios al estilo de los años bisiestos,
+ * es decir, sumando pasos extra para cubrir los decimales cada vez que pasamos por los cuartos
+ * de minuto. Ademas se alterna entre 8 y pasos cada segundo.
  *************************************/
 
 #define MSEC 40000
 #define MaxEst 10
 
-
+// Puertos necesarios (agrupados para facilitar el codigo)
 uint32_t Puerto[]={
         GPIO_PORTK_BASE,
         GPIO_PORTK_BASE,
@@ -32,6 +34,7 @@ uint32_t Puerto[]={
         GPIO_PORTG_BASE,
 
 };
+// Pines usados (agrupados para facilitar el codigo)
 uint32_t Pin[]={
         GPIO_PIN_4,
         GPIO_PIN_5,
@@ -39,6 +42,7 @@ uint32_t Pin[]={
         GPIO_PIN_1,
         };
 
+// Secuencia de activacion de los pines para avanzar un paso (antihorario)
 int Step[4][4]={0,1,0,0,
                 0,0,1,0,
                 0,0,0,1,
@@ -54,7 +58,7 @@ int Step[4][4]={0,1,0,0,
 
 int RELOJ;
 
-
+// Variables para controlar el movimiento y la posicion del motor
 volatile int secuencia = 0;
 int paso = 0;
 
@@ -67,11 +71,14 @@ volatile int descuadre = 0;
 #define FREC 200 //Frecuencia en hercios del tren de pulsos: 5ms
 
 
+// Rutina de interrupcion del timer (cada 5 ms)
 void IntTimer(void)
 {
     int i;
 
     t_5ms ++;
+
+    // Cuando pasa un segundo actualizamos las variables y damos los pasos necesarios
     if(t_5ms == 200)
     {
         mov = 1;
@@ -79,36 +86,38 @@ void IntTimer(void)
         segundos ++;
         if(segundos == 60)
             segundos = 0;
+        //Comprobamos si toca dar un paso extra para compensar los decimales
         if(!(segundos%15))
             descuadre = 1;
     }
 
     if(mov == 1 || descuadre == 1){
+        // Damos los pasos al reves para que sean en sentido horario: secuencia --;
         secuencia --;
         if(secuencia==-1) secuencia=3;
 
+        // Damos el paso siguiente
         for(i = 0; i < 4; i ++)
             GPIOPinWrite(Puerto[i],Pin[i],Pin[i]*Step[secuencia][i]);
 
+        // Contabilizamos el paso dado
         paso ++;
+        // Si el paso recien dado era para descuadrar, no debemos contabilizarlo
         if(descuadre == 1)
         {
             descuadre = 0;
             paso --;
         }
+        // Dejamos de movernos si hemos dado los pasos necesarios para marcar el segundo
         if(paso == (8 + aux))
         {
             paso = 0;
+            // Variable que alterna entre 0 y 1 para dar un paso mas de forma alternada cada segundo
             aux ^= 1;
             mov = 0;
         }
     }
     TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-
-    // aux = aux^1
-    // cada segundo doy 8 + aux pasos
-    // a los 15, 30, 45 y 60 sumo 1 extra y daria 9, 10, 9 y 10 respectivamente
-
 }
 
 
@@ -126,7 +135,7 @@ int main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);       //Habilita T0
     TimerClockSourceSet(TIMER0_BASE, TIMER_CLOCK_SYSTEM);   //T0 a 120MHz
     TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);    //T0 periodico y conjunto (32b)
-    TimerLoadSet(TIMER0_BASE, TIMER_A, 600000 - 1);
+    TimerLoadSet(TIMER0_BASE, TIMER_A, 600000 - 1);     // Configuramos las interrupciones cada 5 ms
     TimerIntRegister(TIMER0_BASE,TIMER_A,IntTimer);
 
     IntEnable(INT_TIMER0A); //Habilitar las interrupciones globales de los timers
@@ -152,6 +161,7 @@ int main(void)
 
 
 	while(1){
+	    // Estamos siempre en bajo consumo menos cuando se produce una interrupcion
 	    SysCtlSleep();
 	}
 	return 0;

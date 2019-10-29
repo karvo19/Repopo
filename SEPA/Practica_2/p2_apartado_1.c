@@ -29,7 +29,7 @@ volatile int pos;
 int RELOJ, PeriodoPWM;
 int t;
 
-// Rutina de interrupcion para el timer 0 (temporizamos un segundo)
+// Rutina de interrupcion para el timer 0 (temporizamos un milisegundo)
 void IntTimer0(void)
 {
     t++;
