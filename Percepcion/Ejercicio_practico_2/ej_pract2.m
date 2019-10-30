@@ -18,7 +18,7 @@ w = 3.52e-3;
 
 % K de distorsión radial:
 % Lente 1:
-kr1 = -0.4320;
+% kr1 = -0.4320;
 
 % Lente 2
 % kr1 = 0.4320;
@@ -36,40 +36,41 @@ fy = f/rho_y;
 
 % Leemos la imagen distorsionada
 % Imagen 1
-f1 = imread('chessBoardDistorted1.jpg');
-ff1 = zeros([N,M]);
+f1 = double(imread('chessBoardDistorted1.jpg'));
 
 % Imagen 2
-f2 = imread('chessBoardDistorted2.jpg');
-ff2 = zeros([N,M]);
+f2 = double(imread('chessBoardDistorted2.jpg'));
 
 
-% Criterio de interpolación al vecino más cercano
-for u = 0:N-1
-    for v = 0:M-1
-        % Cálculo de coordenadas normalizadas
-        xn = (u-u0)/fx;
-        yn = (v-v0)/fy;
+vecino = double(128*ones([N,M]));
+bilineal = double(128*ones([N,M]));
 
-        % u = xn*fx + u0;
-        % v = yn*fy + v0;
+% Correccion de imagen 1
+% function [vecino, bilineal] = corrige(imagen_distorsionada)
+kr1 = -0.4320;
+imagen_distorsionada = f1;
+%[fv1, fb1] = corrige(f1);
+corrige;
+fv1 = vecino;
+fb1 = bilineal;
 
-        % Cálculo de la r2
-        r2 = xn^2 + yn^2;
-
-        % Coordenadas distorsionadas:
-        xn_d = xn*(1+kr1*r2);
-        yn_d = yn*(1+kr1*r2);
-
-        % Coordenadas del píxel distorsionadas:
-        u_d = xn_d*fx + u0;
-        v_d = yn_d*fy + v0;
-        
-        ff1(u+1,v+1) = uint8( f1(round(u_d),round(v_d)) );
-    end
-end
+vecino = double(128*ones([N,M]));
+bilineal = double(128*ones([N,M]));
+% Correccion de imagen 2
+% function [vecino, bilineal] = corrige(imagen_distorsionada)
+kr1 = 0.4320;
+imagen_distorsionada = f2;
+%[fv2, fb2] = corrige(f2);
+corrige;
+fv2 = vecino;
+fb2 = bilineal;
 
 figure(1);
-imshow([f1,ff1]);
+imshow(uint8([f1,fv1,fb1]));
+figure(2);
+imshow(uint8(abs(fv1-fb1)));
 
-% 
+figure(3);
+imshow(uint8([f2,fv2,fb2]));
+figure(4);
+imshow(uint8(abs(fv2-fb2)));
