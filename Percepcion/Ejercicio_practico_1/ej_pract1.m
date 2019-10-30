@@ -72,7 +72,7 @@ N = 4128;               %Número de píxeles horizontales
 M = 3096;               %Número de píxeles verticales
 
 w = 4.96e-3;            %Anchura de sensor de la cámara
-h = 3.52e-3;             %Altura de sensor de la cámara
+h = 3.52e-3;            %Altura de sensor de la cámara
 
 u0 = round(N/2) + 1;    %Offset de u (proyección en lente)
 v0 = round(M/2) -2;     %Offset de v (proyección en lente)
