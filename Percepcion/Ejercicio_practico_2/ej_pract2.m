@@ -41,7 +41,8 @@ f1 = double(imread('chessBoardDistorted1.jpg'));
 % Imagen 2
 f2 = double(imread('chessBoardDistorted2.jpg'));
 
-
+% Se inicializan las matrices con color gris tanto para el interpolador del
+% vecino más cercano como para el bilineal
 vecino = double(128*ones([N,M]));
 bilineal = double(128*ones([N,M]));
 
@@ -49,15 +50,15 @@ bilineal = double(128*ones([N,M]));
 % function [vecino, bilineal] = corrige(imagen_distorsionada)
 kr1 = -0.4320;
 imagen_distorsionada = f1;
-%[fv1, fb1] = corrige(f1);
 corrige;
 fv1 = vecino;
 fb1 = bilineal;
 
 vecino = double(128*ones([N,M]));
 bilineal = double(128*ones([N,M]));
+
+
 % Correccion de imagen 2
-% function [vecino, bilineal] = corrige(imagen_distorsionada)
 kr1 = 0.4320;
 imagen_distorsionada = f2;
 %[fv2, fb2] = corrige(f2);
