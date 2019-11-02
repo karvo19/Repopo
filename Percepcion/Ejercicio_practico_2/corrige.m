@@ -1,6 +1,6 @@
 % Transformacion de coordenadas sin a con distorsion pixel a pixel
-    for u = 0:N-1
-        for v = 0:M-1
+    for u = 1:N
+        for v = 1:M
             % Cálculo de coordenadas normalizadas
             xn = (u-u0)/fx;
             yn = (v-v0)/fy;
@@ -21,9 +21,9 @@
             
             %Si estamos dentro de la imagen, calculamos intensidades de los
             %píxeles. Si no, se mantiene en gris
-            if(u_d >= 0 && u_d <= N-1 && v_d >= 0 && v_d <= M-1)
+            if(u_d >= 1 && u_d <= N && v_d >= 1 && v_d <= M)
                 % Criterio de interpolación al vecino más cercano
-                vecino(u+1,v+1) = imagen_distorsionada(round(u_d)+1,round(v_d)+1);
+                vecino(v,u) = imagen_distorsionada(round(v_d),round(u_d));
 
                 % Criterio de interpolacion bilineal:
 
@@ -51,7 +51,7 @@
                 
                 % Si alguno de los píxeles están en el borde, se considera
                 % el mismo
-                if(u_d_j < 0 || u_d_j >= N)
+                if(u_d_j < 1 || u_d_j > N)
                     u_d_1 = u_d_i;
                     u_d_2 = u_d_i;
                 end
@@ -76,31 +76,31 @@
                 
                 % Si alguno de los píxeles están en el borde, se considera
                 % el mismo
-                if(v_d_j < 0 || v_d_j >= M)
+                if(v_d_j < 1 || v_d_j > M)
                     v_d_1 = v_d_i;
                     v_d_2 = v_d_i;
                 end
 
                 % Ponderamos los valores de intensidad segun proximidad en u.
-                I_ud_v1 = (u_d_2 - u_d) * imagen_distorsionada(u_d_1 + 1, v_d_1 + 1) + ...
-                    (u_d - u_d_1) * imagen_distorsionada(u_d_2 + 1, v_d_1 + 1);
+                I_v1_ud = (u_d_2 - u_d) * imagen_distorsionada(v_d_1, u_d_1) + ...
+                    (u_d - u_d_1) * imagen_distorsionada(v_d_1, u_d_2);
 
-                I_ud_v2 = (u_d_2 - u_d) * imagen_distorsionada(u_d_1 + 1, v_d_2 + 1) + ...
-                    (u_d - u_d_1) * imagen_distorsionada(u_d_2 + 1, v_d_2 + 1);
+                I_v2_ud = (u_d_2 - u_d) * imagen_distorsionada(v_d_2, u_d_1) + ...
+                    (u_d - u_d_1) * imagen_distorsionada(v_d_2, u_d_2);
 
                 % Si nos encontramos en un borde vertical
-                if(u_d_j < 0 || u_d_j >= N)
-                    I_ud_v1 = imagen_distorsionada(u_d_i + 1, v_d_1 + 1);
-                    I_ud_v2 = imagen_distorsionada(u_d_i + 1, v_d_2 + 1);
+                if(u_d_j < 1 || u_d_j > N)
+                    I_v1_ud = imagen_distorsionada(v_d_1, u_d_i);
+                    I_v2_ud = imagen_distorsionada(v_d_2, u_d_i);
                 end
 
                 % Ponderamos los valores de intensidad segun proximidad en v.
-                bilineal(u+1,v+1) = (v_d_2 - v_d) * I_ud_v1 + ...
-                    (v_d - v_d_1) * I_ud_v2;
+                bilineal(v, u) = (v_d_2 - v_d) * I_v1_ud + ...
+                    (v_d - v_d_1) * I_v2_ud;
 
                 % Si nos encontramos en un borde horizontal
-                if(v_d_j < 0 || v_d_j >= M)
-                    bilineal(u+1,v+1) = imagen_distorsionada(u+1,v_d_i+1);
+                if(v_d_j < 1 || v_d_j > M)
+                    bilineal(v, u) = imagen_distorsionada(v_d_i, u);
                 end
             end
         end

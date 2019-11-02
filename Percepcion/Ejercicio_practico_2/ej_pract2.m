@@ -13,8 +13,8 @@ u0 = N/2 + 1;
 v0 = M/2 - 2;
 
 % Sensor de la cámara
-h = 4.96e-3;
-w = 3.52e-3;
+w = 4.96e-3;
+h = 3.52e-3;
 
 % K de distorsión radial:
 % Lente 1:
