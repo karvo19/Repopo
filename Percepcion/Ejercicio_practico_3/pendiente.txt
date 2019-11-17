@@ -1,0 +1,1 @@
+Función a mano de imopen e imclose
