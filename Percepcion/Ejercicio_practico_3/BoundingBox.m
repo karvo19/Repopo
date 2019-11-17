@@ -1,4 +1,4 @@
-function BoundingBox (pEtiq,Imagen)
+function BoundingBox (pEtiq,colorRectangulo)
 
 %Se averiguan las dimensiones de la plantilla
 [M,N]=size(pEtiq);
@@ -38,10 +38,7 @@ end
 % BB es el vector de coordenadas mínimas y máximas
 BB=[xMin;xMax;yMin;yMax];
 
-figure();
-imshow(Imagen);
-
 % Se hace el cuadro que rodea a cada etiqueta
 for i = 1:etiq
-    rectangle('Position',[xMin(i) yMin(i) (xMax(i)-xMin(i)) (yMax(i)-yMin(i))],'LineWidth',2);
+    rectangle('Position',[xMin(i) yMin(i) (xMax(i)-xMin(i)) (yMax(i)-yMin(i))],'LineWidth',2,'EdgeColor',colorRectangulo);
 end

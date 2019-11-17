@@ -50,7 +50,8 @@ imHSV = rgb2hsv(gMediana);
 % imshow(pO);
 % pause();
 % imshow(pK);
-% return;
+
+%%
 
 % El elemento estructurante con el que se trabajará para aplicar métodos
 % morfológicos según los umbrales HSV será de un disco de radio arbitrario:
@@ -83,7 +84,7 @@ pKadj = imopen(pK,maskDisco4);
 pKadj = imclose(pKadj,maskDisco5);
 % imshow([pK,pKadj]);
 % pause();
-% return;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -106,7 +107,6 @@ imshow(pYetiq,[]);
 imshow(pOetiq,[]);
 % pause();
 imshow(pKetiq,[]);
-% return;
 
 % Ahora, se hará el bounding box de cada color
 figure();
@@ -127,7 +127,6 @@ BoundingBox(pOetiq,'r');
 % pause();
 imshow(f);
 BoundingBox(pKetiq,'r');
-% return;
 
 % -------------------------------------------------------------------------
 
@@ -171,8 +170,6 @@ imshow(f);
 BoundingBox(pKetiq,'r');
 viscircles(cdmK',(2*ones(max(max(pKetiq)),1)),'LineWidth',1.5,'EdgeColor','w');
 
-% return;
-
 % Es necesario hacer un promedio de las masas de cada plantilla, ya que se
 % puede apreciar en las figuras que se da a veces la ocasión de que se
 % juntan más de un objeto y, con este promedio, se podrá estudiar el caso
@@ -199,13 +196,13 @@ figure();
 imshow(f); hold on;
 BoundingBox(pRetiq,'r');
 viscircles(cdmR',(2*ones(max(max(pRetiq)),1)),'LineWidth',1.5,'EdgeColor','w');
-
+%----------- Para pruebas solo ejecutar lo de dentro ---------------
 for i = 1:(max(max(pRetiq)))
     if (floor(masaR(i)/masaRprom))
         separaObjetos(pRetiq, i, 9);
     end
 end
-
+%-------------------------------------------------------------------
 hold off;
 
 % Para color verde
@@ -213,13 +210,13 @@ figure();
 imshow(f); hold on;
 BoundingBox(pGetiq,'r');
 viscircles(cdmG',(2*ones(max(max(pGetiq)),1)),'LineWidth',1.5,'EdgeColor','w');
-
+%----------- Para pruebas solo ejecutar lo de dentro ---------------
 for i = 1:(max(max(pGetiq)))
     if (floor(masaG(i)/masaGprom))
         separaObjetos(pGetiq, i, 10);
     end
 end
-
+%-------------------------------------------------------------------
 hold off;
 
 
@@ -228,13 +225,13 @@ figure();
 imshow(f); hold on;
 BoundingBox(pBetiq,'r');
 viscircles(cdmB',(2*ones(max(max(pBetiq)),1)),'LineWidth',1.5,'EdgeColor','w');
-
+%----------- Para pruebas solo ejecutar lo de dentro ---------------
 for i = 1:(max(max(pBetiq)))
     if (floor(masaB(i)/masaBprom))
         separaObjetos(pBetiq, i, 9);
     end
 end
-
+%-------------------------------------------------------------------
 hold off;
 
 % Para color naranja
@@ -242,11 +239,11 @@ figure();
 imshow(f); hold on;
 BoundingBox(pOetiq,'r');
 viscircles(cdmO',(2*ones(max(max(pOetiq)),1)),'LineWidth',1.5,'EdgeColor','w');
-
+%----------- Para pruebas solo ejecutar lo de dentro ---------------
 for i = 1:(max(max(pOetiq)))
     if (floor((masaO(i)/masaOprom)-0.1))        % El -0.1 es para evitar que salga el objeto más grande
         separaObjetos(pOetiq, i, 9);
     end
 end
-
+%-------------------------------------------------------------------
 hold off;
