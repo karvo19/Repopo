@@ -63,26 +63,28 @@ maskDisco5 = strel('disk',5);
 
 % -----------------------------------------HACER FUNCION DE OPENING Y DE CLOSING
 
-pRadj = imopen(pR,maskDisco3);
-% imshow([pR,pRadj]);
-% pause();
-pGadj = imopen(pG,maskDisco3);
-% imshow([pG,pGadj]);
-% pause();
-pBadj = imopen(pB,maskDisco3);
-% imshow([pB,pBadj]);
-% pause();
-pYadj = imopen(pY,maskDisco5);
-% imshow([pY,pYadj]);
-% pause();
-pOadj = imopen(pO,maskDisco3);
-pOadj = imclose(pOadj,maskDisco5);
-% imshow([pO,pOadj]);
-% pause();
-pKadj = imopen(pK,maskDisco4);
-pKadj = imclose(pKadj,maskDisco5);
-% imshow([pK,pKadj]);
-% pause();
+pRadj = abreImagen(pR,maskDisco3);
+imshow([pR,pRadj]);
+pause();
+pGadj = abreImagen(pG,maskDisco3);
+imshow([pG,pGadj]);
+pause();
+pBadj = abreImagen(pB,maskDisco3);
+imshow([pB,pBadj]);
+pause();
+pYadj = abreImagen(pY,maskDisco5);
+pYadj2 = imopen(pY,maskDisco5);
+imshow([pY,pYadj,pYadj2]);
+diff = max(max(pYadj-pYadj2))
+pause();
+pOadj = abreImagen(pO,maskDisco3);
+pOadj = cierraImagen(pOadj,maskDisco5);
+imshow([pO,pOadj]);
+pause();
+pKadj = abreImagen(pK,maskDisco4);
+pKadj = cierraImagen(pKadj,maskDisco5);
+imshow([pK,pKadj]);
+pause();
 % return;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
