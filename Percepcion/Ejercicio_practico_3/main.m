@@ -4,7 +4,7 @@ clear all
 % En primer lugar, añadimos la imagen
 f = imread ('imagenDePartida.png');
 
-figure(1);
+figure();
 imshow(f);
 title('Imagen de partida');
 
@@ -15,13 +15,13 @@ title('Imagen de partida');
 % Hay que elegir el radio de la máscara con la que se quiere operar
 % rMask = 1;
 % gMediana1 = filtroMediana(f,rMask);
-% figure(2);
+% figure();
 % imshow(gMediana1);
 % title('Filtro de la media con máscara de radio 1');
 
 rMask = 2;
 gMediana = filtroMediana(f,rMask);
-figure(3);
+figure();
 imshow(gMediana);
 title('Filtro de la media con máscara de radio 2');
 
@@ -39,16 +39,22 @@ imHSV = rgb2hsv(gMediana);
 % la plantilla de cada color. Se emplea la función plantillaBinaria
 [pR,pG,pB,pY,pO,pK] = plantillaBinaria(imHSV,uR,uG,uB,uY,uO,uK);
 
+% figure()
 % imshow(pR);
 % pause();
+% figure()
 % imshow(pG);
 % pause();
+% figure()
 % imshow(pB);
 % pause();
+% figure()
 % imshow(pY);
 % pause();
+% figure()
 % imshow(pO);
 % pause();
+% figure()
 % imshow(pK);
 % return;
 
@@ -61,33 +67,28 @@ maskDisco5 = strel('disk',5);
 % Viendo los resultados de cada plantilla, se operará sobre cada una de
 % ellas de forma distinta
 
-% -----------------------------------------HACER FUNCION DE OPENING Y DE CLOSING
-
 pRadj = abreImagen(pR,maskDisco3);
 imshow([pR,pRadj]);
-pause();
+% pause();
 pGadj = abreImagen(pG,maskDisco3);
 imshow([pG,pGadj]);
-pause();
+% pause();
 pBadj = abreImagen(pB,maskDisco3);
 imshow([pB,pBadj]);
-pause();
+% pause();
 pYadj = abreImagen(pY,maskDisco5);
-pYadj2 = imopen(pY,maskDisco5);
-imshow([pY,pYadj,pYadj2]);
-diff = max(max(pYadj-pYadj2))
-pause();
+imshow([pY,pYadj]);
+% pause();
 pOadj = abreImagen(pO,maskDisco3);
 pOadj = cierraImagen(pOadj,maskDisco5);
 imshow([pO,pOadj]);
-pause();
+% pause();
 pKadj = abreImagen(pK,maskDisco4);
 pKadj = cierraImagen(pKadj,maskDisco5);
 imshow([pK,pKadj]);
-pause();
+% pause();
 % return;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Se hace el etiquetado de las figuras en cada caso:
 pRetiq = bwlabel(pRadj);
@@ -193,7 +194,8 @@ masaKprom = sum(masaK)/(max(size(masaK)));
 % Ahora, se identifican las masas que están juntas y se aplican
 % transformaciones morfológicas para separarlas
 
-% Se cierran todas las ventanas anteriormente creadas
+% Se cierran todas las ventanas anteriormente creadas para pintar
+% exclusivamente las seis imagenes finales
 close all;
 
 % Para color rojo
@@ -239,6 +241,12 @@ end
 
 hold off;
 
+% Volvemos a pintar el amarillo, ya que lo hemos cerrado
+figure();
+imshow(f);
+BoundingBox(pYetiq,'r');
+viscircles(cdmY',(2*ones(max(max(pYetiq)),1)),'LineWidth',1.5,'EdgeColor','w');
+
 % Para color naranja
 figure();
 imshow(f); hold on;
@@ -252,3 +260,9 @@ for i = 1:(max(max(pOetiq)))
 end
 
 hold off;
+
+% Volvemos a pintar el negro, ya que lo hemos cerrado
+figure();
+imshow(f);
+BoundingBox(pKetiq,'r');
+viscircles(cdmK',(2*ones(max(max(pKetiq)),1)),'LineWidth',1.5,'EdgeColor','w');

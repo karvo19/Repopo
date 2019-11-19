@@ -5,7 +5,7 @@ function separaObjetos(plantilla,etiqueta,tamanoMask)
     
     % Plantilla con el objeto de interés
     plantillaObjeto = (plantilla==etiqueta);
-    plantillaErosionada = erosionaImagen (plantillaObjeto, mask);
+    plantillaErosionada = erosionaImagen(plantillaObjeto, mask);
     
     %--------------- Para pruebas comentar y descomentar ---------------%
 %     imshow (plantillaErosionada);
@@ -27,7 +27,7 @@ function separaObjetos(plantilla,etiqueta,tamanoMask)
     % le devuelve el tamaño original
     for i=1:etiqSeparada
         plantillaObjetoSeparado = (etiquetado2==i);
-        plantillaDilatada(:, :, i) = dilataImagen (plantillaObjetoSeparado, mask);
+        plantillaDilatada(:, :, i) = dilataImagen(plantillaObjetoSeparado, mask);
 %         imshow(plantillaDilatada(:,:,i));
 %         pause();
     end
