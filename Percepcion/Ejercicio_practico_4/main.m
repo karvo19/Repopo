@@ -18,7 +18,7 @@ e8 = imread ('e8.png');
 e9 = imread ('e9.png');
 
 % A blanco y negro con un umbral normalizado de 0.5:
-umbralBW = 0.5;
+umbralBW = 0.3;
 
 e0bw = uint8(not(im2bw(e0,umbralBW))); 
 e1bw = uint8(not(im2bw(e1,umbralBW)));
@@ -71,11 +71,18 @@ et(:,:,10)=bwlabel(e0bw);
 % que, a priori, se van a considerar los 8 momentos de Hu (7 filas + 1 fila
 % para identificar la clase del patrón)
 
-% MatrizPatrones = zeros (8,240);
+MatrizPatrones = zeros (8,240);
 MatrizPatrones = [];
 for i=1:10
     Patrones_i = Entrenador(et(:,:,i),i);
     MatrizPatrones = [MatrizPatrones, Patrones_i];
 end
 
-return;
+%% OTRA SERSION
+% return;
+
+% Lectura de matrícula:
+f = imread('matriculas.png');
+umbralMatBW = 0.45;
+fbw = uint8(not(im2bw(f,umbralMatBW))); 
+imshow(fbw,[]);
