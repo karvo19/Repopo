@@ -4,7 +4,7 @@
 % características en una matriz (en este caso, los momentos de Hu) y se
 % devuelve una matriz en la que se almacenan los patrones.
 
-function MatrizPatrones = Entrenador(img,nClase)
+function MatrizPatrones = Entrenador(img)
 
 %Es necesario ir etiqueta a etiqueta e ir calculando los momentos de Hu
 %para cada etiqueta. Se considera inicialmente que se van a trabajar con
@@ -14,8 +14,7 @@ nEtiqs = max(max(img));
 
 MatrizPatrones = zeros(8,nEtiqs);
 
-VectorClases = nClase*ones(1,nEtiqs); 
 MomentosClases = calculaMomentosHu(img);
-MatrizPatrones = [MomentosClases; VectorClases];
+MatrizPatrones = escaladoHu(MomentosClases);
 
 end

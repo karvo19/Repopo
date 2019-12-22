@@ -71,18 +71,112 @@ et(:,:,10)=bwlabel(e0bw);
 % que, a priori, se van a considerar los 8 momentos de Hu (7 filas + 1 fila
 % para identificar la clase del patrón)
 
-MatrizPatrones = zeros (8,240);
-MatrizPatrones = [];
-for i=1:10
-    Patrones_i = Entrenador(et(:,:,i),i);
-    MatrizPatrones = [MatrizPatrones, Patrones_i];
-end
+% MatrizPatrones = zeros (8,240);
+MatrizPatrones = zeros(7,24,10); 
+MediasPatrones = zeros(7,10); %Filas--> momentos de Hu 7; Columnas --> dígitos 10
+MatrizEntrenamiento = []; %PARA CONSTRUCTOR
 
-%% OTRA SERSION
+
+MatrizPatrones(:,:,1) = Entrenador(et(:,:,1));
+return;
+
+for i=1:10
+    MatrizPatrones(:,:,i) = Entrenador(et(:,:,i));
+    MatrizEntrenamiento(1:7,1+24*(i-1):24*i) = MatrizPatrones(:,:,i);
+    MatrizEntrenamiento(8,1+24*(i-1):24*i) = i*ones(1,24);
+    MediasPatrones(:,i) = calculaMediaPatron(MatrizPatrones(:,:,i));
+end
+return;
+% Las medias están puestas como vector columna y nos interesa que esté como
+% vector fila:
+MediasPatrones = MediasPatrones';
 % return;
+
+%% Validación
+
+% % Ahora, es necesario ver qué características son las que mejor se
+% % diferencian entre un dígito y otro. Para ello, se va a recurrir al
+% % cálculo del momento de Fisher para cada clase.
+
+% % Validacion;
+
+% % Es necesario calcular la media de todas las clases:
+% nClases = 10;
+% Medias = zeros(size(MediasPatrones)); %Inicialización
+
+% % Sumatorio
+% for i=1:nClases
+%     Medias = Medias + MediasPatrones(i,:);
+% end
+% % return;
+% % Dividido entre el número de clases
+% Medias = (1/nClases) * Medias;
+% 
+% Vk = zeros(10,10,10); %Covarianza de 24x24 (patrones) y 10 dígitos
+
+% % La covarianza de cada clase resulta:
+% for i=1:10
+%     Vk(:,:,i) = cov(MatrizPatrones(:,1:10,i));
+% end
+
+% % Por tanto, ya se tienen todos los datos necesarios para calcular el
+% % coeficiente de Fisher generalizado:
+% fisher = calculaFisher(nClases,Medias,MediasPatrones,Vk);
+
+% return;
+%%
 
 % Lectura de matrícula:
 f = imread('matriculas.png');
 umbralMatBW = 0.45;
-fbw = uint8(not(im2bw(f,umbralMatBW))); 
+fbw = uint8(not(im2bw(f,umbralMatBW)));
+figure();
 imshow(fbw,[]);
+
+% Ahora, es necesario identificar el marco de la matrícula para eliminarla
+% de los objetos de estudio. Para ello, se va a identificar dentro de todas
+% las etiquetas de esta última imagen, cuál no cumple cierta condición. La
+% matrícula se caracteriza por ser, por ejemplo, (área / masa) es mucho
+% mayor que cualquier dígito.
+
+% Para calcular el área, se van a emplear los ejes principales de cada
+% número, ya que las matrículas se encuentran giradas y, de esta forma, se
+% calcularía de forma más precisa el área de cada etiqueta.
+
+fet = bwlabel(fbw);
+figure();
+imshow(fet,[]);
+
+% Ahora, sacamos la información necesaria para poder obtener la masa de
+% cada etiqueta, además de sus ejes principales de inercia y también se
+% obtendrán los ángulos girados de cada etiqueta en caso de que sea
+% necesario posteriormente operar con ellos.
+
+[masa_et,a_et,b_et,ang_et] = informacionGeometrica(fet);
+
+% return;
+
+fet2 = limpiaPlantilla(fet,masa_et,a_et,b_et);
+
+figure();
+imshow(fet2,[]);
+
+% return;
+
+%% Clasificador
+% Una vez obtenida la imagen de los dígitos etiquetada, es necesario
+% analizar una a una e ir interpretando gracias al entrenamiento a qué
+% dígito se corresponde.
+
+% Para ello, será necesario calcular los momentos de Hu de cada dígito:
+
+MomentosHuDigitos = calculaMomentosHu(fet2);
+
+% Se puede apreciar que cada momento de Hu tiene un rango muy distinto de
+% valores numéricos, por lo que es necesario hacer un escalado de ellas,
+% por ejemplo, entre 0 y 1:
+
+MomentosHuDigitosEscalados=zeros(size(fet2));
+
+MomentosHuDigitosEscalados = escaladoHu(MomentosHuDigitos);
+
