@@ -7,8 +7,8 @@ function MomentosHuEscalados = escaladoHu(MomentosHu)
 [alto,ancho] = size(MomentosHu);
 
 for i=1:7
-   Max_i = max(max(MomentosHu(:,:)));
-   Min_i = min(min(MomentosHu(:,:)));
+   Max_i = max(MomentosHu(i,:));
+   Min_i = min(MomentosHu(i,:));
    for j=1:ancho
        MomentosHuEscalados(i,j) = ( MomentosHu(i,j) - Min_i ) / ( Max_i - Min_i );
    end
