@@ -1,8 +1,15 @@
 %% Ejercicio práctico 4 Sistemas de percepción: Reconocimiento de objetos
 % Programa principal
+% Preparación:
 clc
 % Se añade la ruta de las imagénes de entrenamiento
 addpath ./Entrenamiento;
+
+% Comenzaremos con la preparacion de las muestras conocidas que servirán de
+% entrenamiento para construir el clasificador. El proceso de preparación
+% consistirá en tratar y etiquetar la imagen, seguido del calculo de las
+% características a usar para la clasificacion, en este caso, los momentos
+% de Hu.
 
 % En primer lugar, será necesario cargar las imágenes de entrenamiento y
 % las pasamos a blanco y negro con un umbral normalizado a elegir:
@@ -92,39 +99,7 @@ MatrizEntrenamiento(1:7,:) = escaladoHu(MatrizEntrenamiento);
 MediasPatrones = MediasPatrones';
 % return;
 
-%% Validación
-
-% % Ahora, es necesario ver qué características son las que mejor se
-% % diferencian entre un dígito y otro. Para ello, se va a recurrir al
-% % cálculo del momento de Fisher para cada clase.
-
-% % Validacion;
-
-% % Es necesario calcular la media de todas las clases:
-% nClases = 10;
-% Medias = zeros(size(MediasPatrones)); %Inicialización
-
-% % Sumatorio
-% for i=1:nClases
-%     Medias = Medias + MediasPatrones(i,:);
-% end
-% % return;
-% % Dividido entre el número de clases
-% Medias = (1/nClases) * Medias;
-% 
-% Vk = zeros(10,10,10); %Covarianza de 24x24 (patrones) y 10 dígitos
-
-% % La covarianza de cada clase resulta:
-% for i=1:10
-%     Vk(:,:,i) = cov(MatrizPatrones(:,1:10,i));
-% end
-
-% % Por tanto, ya se tienen todos los datos necesarios para calcular el
-% % coeficiente de Fisher generalizado:
-% fisher = calculaFisher(nClases,Medias,MediasPatrones,Vk);
-
-% return;
-%%
+%% Preparacion del conjunto a explotar.
 
 % Lectura de matrícula:
 f = imread('matriculas.png');
@@ -163,9 +138,9 @@ imshow(fet2,[]);
 
 % return;
 
-%% Clasificador
-% Una vez obtenida la imagen de los dígitos etiquetada, es necesario
-% analizar una a una e ir interpretando gracias al entrenamiento a qué
+%% 
+% Una vez etiquetados los digitos de la imagen a explotar, es necesario
+% analizar uno a uno e ir interpretando gracias al entrenamiento a qué
 % dígito se corresponde.
 
 % Para ello, será necesario calcular los momentos de Hu de cada dígito:
@@ -176,10 +151,24 @@ MomentosHuDigitos = calculaMomentosHu(fet2);
 % valores numéricos, por lo que es necesario hacer un escalado de ellas,
 % por ejemplo, entre 0 y 1:
 
-MomentosHuDigitosEscalados=zeros(size(fet2));
+MomentosHuDigitosEscalados = zeros(size(fet2));
 
 MomentosHuDigitosEscalados = escaladoHu(MomentosHuDigitos);
 
-%%
+%% Clasificador
+
+% Ahora ya disponemos de todos los datos necesarios cargados en memoria,
+% tanto de los patrones como de la imagen que se quiere clasificar.
+%
+% Usaremos lo datos (momentos de Hu) de los patrones para construir el
+% clasificador y validarlo, con el paso intermedio de decidir que
+% subconjunto de características nos arroja un PCI mas favorable.
+
+Constructor;
 Validacion;
+
+% Hecho esto pasamos a la explotacion, cotejando las caracteristicas de los
+% digitos a explotar con la disponible en la matriz de prototipos
+% generada por el constructor.
+
 Explotacion;
