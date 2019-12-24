@@ -14,7 +14,6 @@ nEtiqs = max(max(img));
 
 MatrizPatrones = zeros(8,nEtiqs);
 
-MomentosClases = calculaMomentosHu(img);
-MatrizPatrones = escaladoHu(MomentosClases);
+MatrizPatrones = calculaMomentosHu(img);
 
 end

@@ -77,15 +77,15 @@ MediasPatrones = zeros(7,10); %Filas--> momentos de Hu 7; Columnas --> dígitos 1
 MatrizEntrenamiento = []; %PARA CONSTRUCTOR
 
 
-MatrizPatrones(:,:,1) = Entrenador(et(:,:,1));
-return;
-
 for i=1:10
     MatrizPatrones(:,:,i) = Entrenador(et(:,:,i));
     MatrizEntrenamiento(1:7,1+24*(i-1):24*i) = MatrizPatrones(:,:,i);
     MatrizEntrenamiento(8,1+24*(i-1):24*i) = i*ones(1,24);
     MediasPatrones(:,i) = calculaMediaPatron(MatrizPatrones(:,:,i));
 end
+
+MatrizEntrenamiento(1:7,:) = escaladoHu(MatrizEntrenamiento);
+
 return;
 % Las medias están puestas como vector columna y nos interesa que esté como
 % vector fila:

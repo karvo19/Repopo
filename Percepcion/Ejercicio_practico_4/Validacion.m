@@ -24,18 +24,14 @@ end
 
 % El resultado de la media es una matriz de vectores prototipo:
 Mprototipos = zeros (3,nClases);
-Mprototipos(1,:) = sumaPorClase(1,:)./nPatronesPorClase;
-Mprototipos(2,:) = sumaPorClase(2,:)./nPatronesPorClase;
-Mprototipos(3,:) = sumaPorClase(3,:)./nPatronesPorClase;
-Mprototipos(4,:) = sumaPorClase(4,:)./nPatronesPorClase;
-Mprototipos(5,:) = sumaPorClase(5,:)./nPatronesPorClase;
-Mprototipos(6,:) = sumaPorClase(6,:)./nPatronesPorClase;
-Mprototipos(7,:) = sumaPorClase(7,:)./nPatronesPorClase;
-
-aux1=1;
-aux2=2;
-aux3=3;
-
+i = 1;
+Mprototipos(i,:) = sumaPorClase(1,:)./nPatronesPorClase; i = i + 1;
+% Mprototipos(i,:) = sumaPorClase(2,:)./nPatronesPorClase; i = i + 1;
+Mprototipos(i,:) = sumaPorClase(3,:)./nPatronesPorClase; i = i + 1;
+Mprototipos(i,:) = sumaPorClase(4,:)./nPatronesPorClase; i = i + 1;
+% Mprototipos(i,:) = sumaPorClase(5,:)./nPatronesPorClase; i = i + 1;
+Mprototipos(i,:) = sumaPorClase(6,:)./nPatronesPorClase; i = i + 1;
+% Mprototipos(i,:) = sumaPorClase(7,:)./nPatronesPorClase; i = i + 1;
 
 
 
@@ -71,13 +67,13 @@ for patron = 1:nPatrones
     
     
     claseK = MatrizEntrenamiento(8,patron);
-    x = [x1, x2, x3, x4, x5, x6, x7]';
+    x = [x1, x3, x4, x6]'; % Decidimos cuales vamos a usar
     
     % Cálculo las distancias del patrón a cada prototipo:
     distancias = zeros (1,nClases);
     for clase = 1:nClases
        z = Mprototipos(:,clase);
-       distancias(clase) = norm (z-x);
+       distancias(clase) = norm(z - x);
     end
     
     % Búsqueda de la mínima distancia:
@@ -93,21 +89,21 @@ for patron = 1:nPatrones
     
     % Dibujo del resultado:
     if claseK_TrasClasif == 1
-        plot3(x1,x2,x3, 'Color', 'b', 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', 'b', 'Marker', marcador);
     elseif claseK_TrasClasif == 2
-        plot3(x1,x2,x3, 'Color', 'r', 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', 'r', 'Marker', marcador);
     elseif claseK_TrasClasif == 3
-        plot3( x1,x2,x3, 'Color', [0,1,0], 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', [0,1,0], 'Marker', marcador);
     elseif claseK_TrasClasif == 4
-        plot3(x1,x2,x3, 'Color', [0.4,0.4,0.4], 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', [0.4,0.4,0.4], 'Marker', marcador);
     elseif claseK_TrasClasif == 5
-        plot3(x1,x2,x3, 'Color', [0.8,0,0.8], 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', [0.8,0,0.8], 'Marker', marcador);
     elseif claseK_TrasClasif == 6
-        plot3(x1,x2,x3, 'Color', [0.5,0.8,0.2], 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', [0.5,0.8,0.2], 'Marker', marcador);
     elseif claseK_TrasClasif == 7
-        plot3(x1,x2,x3, 'Color', [0.2,0.9,0.5], 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', [0.2,0.9,0.5], 'Marker', marcador);
     elseif claseK_TrasClasif == 8
-        plot3(x1,x2,x3, 'Color', [0.9,0.2,0.5], 'Marker', marcador);
+        plot3(x(1,:),x(2,:),x(3,:), 'Color', [0.9,0.2,0.5], 'Marker', marcador);
     elseif claseK_TrasClasif == 9
         plot3(x1,x2,x3, 'Color', [0.7,0.7,0.1], 'Marker', marcador);
     elseif claseK_TrasClasif == 10
@@ -131,3 +127,4 @@ axis([0 1 0 1 0 1]);
 
 PCI = 100 * nClasifIncorrectas / nPatrones;
 ['Número de clasificaciones incorrectas: PCI = ', num2str(PCI), '%']
+['PCI = ', num2str(PCI), '%']
