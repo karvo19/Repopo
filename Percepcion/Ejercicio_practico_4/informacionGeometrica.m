@@ -117,15 +117,15 @@ end
 
 % -------------------------------------------
 
-% Ahora, se calcula la longitud de los semiejes de cada elipse (al
-% cuadrado)
+% Ahora, se calcula la longitud de los semiejes inerciales de cada elipse 
+% (al cuadrado)
 
 a2 = 2* ((mu20+mu02+sqrt((mu20-mu02).^2+4*mu11.^2))./mu00);
 b2 = 2* ((mu20+mu02-sqrt((mu20-mu02).^2+4*mu11.^2))./mu00);
 
-% Por tanto, la longitud de los semiejes resulta:
-a = sqrt(a2);
-b = sqrt(b2);
+% Por tanto, la longitud de los semiejes inerciales resulta:
+a = sqrt(a2);   % Semieje inercial mayor
+b = sqrt(b2);   % Semieje inercial menor
 
 % El ángulo de los semiejes respecto a la horizontal resulta:
 % Pd: notar que este ángulo obtenido es el negativo del real

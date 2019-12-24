@@ -2,9 +2,10 @@
 % Explotación
 
 
-% Cargamos en 'M' el conjunto de patrones a determinar, con la misma estructura:             
-% MomentosHuDigitosEscalados;
-[nf, nPatrones] = size(MomentosHuDigitosEscalados);  % se supone nf=3
+% Es necesario saber el tamaño de MomentosHuDigitosEscalados, que son los
+% dígitos que se han leído de la imagen de las matrículas
+
+[nf, nPatrones] = size(MomentosHuDigitosEscalados);
 clasesPertenecientes = zeros(nPatrones);
 
 for patron = 1:nPatrones
@@ -17,7 +18,11 @@ for patron = 1:nPatrones
     x6 = MomentosHuDigitosEscalados(6,patron);
     x7 = MomentosHuDigitosEscalados(7,patron);
     
-    x = [x1, x3, x4, x6]'; % Decidimos cuales vamos a usar
+    
+    % A continuación, se decide qué características se desean usar
+    % TENER EN CUENTA QUE EN CONSTRUCTOR HABRÍA QUE MODIFICAR Mprototipos
+    % (comentar y descomentar las características que se desean)
+    x = [x1, x3, x4, x6]';
     
     % Cálculo las distancias del patrón a cada prototipo:
     distancias = zeros (1,nClases);
@@ -31,11 +36,13 @@ for patron = 1:nPatrones
     clasesPertenecientes(patron) = claseK_TrasClasif;
 end
 
-%%
-clc
 
 figure();
+% Se muestra la imagen original de las matrículas
 imshow(f);hold on;
+
+% Se calculan los centros de masa de los dígitos (etiquetados) para saber
+% dónde habría que poner los dígitos que se identifican
 cdmasa = calculaCDMasa(fet2);
 
 for n = 1:nPatrones    

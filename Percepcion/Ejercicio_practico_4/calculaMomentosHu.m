@@ -72,6 +72,7 @@ Hu5 = (eta30-3*eta12).*(eta30+eta12).*( (eta30+eta12).^2-3*(eta21+eta03).^2 ) + 
 Hu6 = (eta20-eta02).*( (eta30+eta12).^2 - (eta21+eta03).^2 ) + 4*eta11.*(eta30+eta12).*(eta21+eta03);
 Hu7 = (3*eta21-eta03).*(eta30+eta12).*( (eta30+eta12).^2 - 3*(eta21+eta03).^2 ) - (eta30-3*eta12).*(eta21+eta03).*( 3*(eta30+eta12).^2 - (eta21+eta03).^2  );
 
+% Se agrupan todos los momentos de Hu en un vector columna y se devuelve
 MomentosHu = [Hu1;Hu2;Hu3;Hu4;Hu5;Hu6;Hu7];
 
 
