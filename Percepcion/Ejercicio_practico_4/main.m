@@ -86,7 +86,7 @@ end
 
 MatrizEntrenamiento(1:7,:) = escaladoHu(MatrizEntrenamiento);
 
-return;
+%return;
 % Las medias están puestas como vector columna y nos interesa que esté como
 % vector fila:
 MediasPatrones = MediasPatrones';
@@ -180,3 +180,6 @@ MomentosHuDigitosEscalados=zeros(size(fet2));
 
 MomentosHuDigitosEscalados = escaladoHu(MomentosHuDigitos);
 
+%%
+Validacion;
+Explotacion;
